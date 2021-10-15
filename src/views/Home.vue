@@ -11,17 +11,30 @@
         <b-button variant="success" :active="active">Pesquisar</b-button>
       </b-col>
     </b-row>
-    <b-row>
+    <b-row v-if="!waiting">
       <b-col>
-        <b-card :title="result.description">
+        <b-card v-if="result" :title="result.description">
           <b-card-text>
             Histórico
             <b-list-group>
               <b-list-group-item v-for="item in result.history" :key="item">
-                {{item}}
+                <b-row>
+                  <b-col>
+                  {{item.date.format("MMM Do YYYY, h:mm:ss")}}
+                  </b-col>
+                  <b-col>
+                    {{item.comments}}
+                  </b-col>
+                  <b-col>
+                    {{item.city}} - {{item.state}}
+                  </b-col>
+                </b-row>
               </b-list-group-item>
             </b-list-group>
           </b-card-text>
+        </b-card>
+        <b-card v-else>
+          Seu código de rastreamento não retornou resultados
         </b-card>
       </b-col>
     </b-row>
@@ -29,16 +42,29 @@
 </template>
 
 <script>
+import moment from "moment";
 
 export default {
   name: 'Home',
   data: () => ({
     search: "",
     active: true,
+    waiting: true,
     result: {
       description: "#XPTO",
       history: [
-        "XPTO"
+        {
+          date: moment(),
+          city: "São Paulo",
+          state: "SP",
+          comments: "Objeto Postado"
+        },
+        {
+          date: moment().add(1, "day"),
+          city: "São Paulo",
+          state: "SP",
+          comments: "Objeto saiu para entrega"
+        }
       ]
     }
   }),
