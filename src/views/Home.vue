@@ -18,10 +18,13 @@
         <b-card v-if="result" :title="result.description">
           <b-card-text>
             <div v-if="Array.isArray(result)">
-              <b-table hover :items="result"
-                       :fields="[{key:'code', label:'Código'}, {key:'description', label:'Descrição'}, {key:'lastUpdate', label: 'Ultima Movimentação', formatter: formatDate}]">
-
-              </b-table>
+              <b-table hover
+                       selectable
+                       select-mode="single"
+                       :items="result"
+                       :fields="[{key:'code', label:'Código'}, {key:'description', label:'Descrição'}, {key:'lastUpdate', label: 'Ultima Movimentação', formatter: formatDate}]"
+                        @row-selected="onRowSelected"
+              />
             </div>
             <div v-else>
               Histórico
@@ -85,6 +88,9 @@ export default {
     },
     formatDate(date) {
       return moment(date).format("MMM Do YYYY, h:mm:ss")
+    },
+    onRowSelected(items) {
+      this.result = items[0]
     }
   }
 }
