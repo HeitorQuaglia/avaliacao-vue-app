@@ -11,7 +11,7 @@
         <b-button variant="success" :active="active">Pesquisar</b-button>
       </b-col>
     </b-row>
-    <b-row v-if="!waiting">
+    <b-row class="mt-3" v-if="!waiting">
       <b-col>
         <b-card v-if="result" :title="result.description">
           <b-card-text>
@@ -38,6 +38,11 @@
         </b-card>
       </b-col>
     </b-row>
+    <b-row class="mt-3" v-else-if="loading">
+      <b-col class="text-center mt-3">
+        <b-spinner variant="success"></b-spinner>
+      </b-col>
+    </b-row>
   </div>
 </template>
 
@@ -50,6 +55,7 @@ export default {
     search: "",
     active: true,
     waiting: true,
+    loading: false,
     result: {
       description: "#XPTO",
       history: [
