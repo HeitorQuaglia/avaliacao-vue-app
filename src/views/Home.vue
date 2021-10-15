@@ -15,7 +15,7 @@
     </b-row>
     <b-row class="mt-3" v-if="!waiting">
       <b-col>
-        <b-card v-if="result" :title="result.description">
+        <b-card v-if="Object.keys(result).length" :title="result.description">
           <b-card-text>
             <div v-if="Array.isArray(result)">
               <b-table hover
@@ -23,11 +23,11 @@
                        select-mode="single"
                        :items="result"
                        :fields="[{key:'code', label:'Código'}, {key:'description', label:'Descrição'}, {key:'lastUpdate', label: 'Ultima Movimentação', formatter: formatDate}]"
-                        @row-selected="onRowSelected"
+                       @row-selected="onRowSelected"
               />
             </div>
             <div v-else>
-              Histórico
+              <div class="text-center">Histórico</div>
               <b-list-group>
                 <b-list-group-item v-for="item in result.history" :key="item.id">
                   <b-row>
@@ -43,6 +43,7 @@
                   </b-row>
                 </b-list-group-item>
               </b-list-group>
+              <b-button class="mt-3" v-if="this.cache" @click="onClickBack" variant="secondary">Voltar</b-button>
             </div>
           </b-card-text>
         </b-card>
@@ -71,14 +72,17 @@ export default {
       active: true,
       waiting: true,
       loading: false,
-      result: null
+      result: null,
+      cache: null
     }
   },
   methods: {
     doSearch() {
       if (this.search.length) {
+        this.result = null;
         this.loading = true;
         axios.get(`packages/search?q=${this.search}`).then(res => {
+          this.cache = null
           this.result = res.data;
         }).finally(() => {
           this.loading = false
@@ -90,7 +94,11 @@ export default {
       return moment(date).format("MMM Do YYYY, h:mm:ss")
     },
     onRowSelected(items) {
+      this.cache = this.result
       this.result = items[0]
+    },
+    onClickBack(){
+      this.result = this.cache
     }
   }
 }
