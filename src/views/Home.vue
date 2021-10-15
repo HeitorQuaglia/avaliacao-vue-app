@@ -17,7 +17,13 @@
       <b-col>
         <b-card v-if="result" :title="result.description">
           <b-card-text>
-            <div v-if="typeof result === 'object'">
+            <div v-if="Array.isArray(result)">
+              <b-table hover :items="result"
+                       :fields="[{key:'code', label:'Código'}, {key:'description', label:'Descrição'}, {key:'lastUpdate', label: 'Ultima Movimentação', formatter: formatDate}]">
+
+              </b-table>
+            </div>
+            <div v-else>
               Histórico
               <b-list-group>
                 <b-list-group-item v-for="item in result.history" :key="item.id">
@@ -34,11 +40,6 @@
                   </b-row>
                 </b-list-group-item>
               </b-list-group>
-            </div>
-            <div v-else>
-              <b-table :items="result">
-
-              </b-table>
             </div>
           </b-card-text>
         </b-card>
